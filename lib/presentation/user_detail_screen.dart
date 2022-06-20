@@ -11,6 +11,16 @@ class UserDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen<UserState>(userNotifierProvider, (previous, next) {
+      if (next.error2 != null && previous?.error2 != next.error2) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.error2!),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    });
     final userNotifier = ref.watch(userNotifierProvider.notifier);
     final user = ref
         .watch(userNotifierProvider)
@@ -37,31 +47,53 @@ class UserDetailScreen extends ConsumerWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-                onPressed: user.profileVerificationStatus == "rejected" ||
-                        user.profileVerificationStatus == "pendinig"
-                    ? () => userNotifier.changeVerificationStatus(
-                        userId, "VERIFIED")
-                    : () => userNotifier.changeVerificationStatus(
-                        userId, "REJECTED"),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
-                  minimumSize: const Size.fromHeight(40),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => userNotifier.changeVerificationStatus(
+                        userId, "VERIFIED"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.green,
+                      // minimumSize: const Size.fromHeight(50),
+                    ),
+                    child: ref.watch(userNotifierProvider).isLoading2
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            'Approve',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                  ),
                 ),
-                child: ref.watch(userNotifierProvider).isLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : Text(
-                        user.profileVerificationStatus == "rejected" ||
-                                user.profileVerificationStatus == "pendinig"
-                            ? 'Verify Profile'
-                            : 'Reject Profile',
-                        style: const TextStyle(color: Colors.white),
-                      )),
-          )
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: ElevatedButton(
+                      onPressed: () => userNotifier.changeVerificationStatus(
+                          userId, "REJECTED"),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red,
+                        // minimumSize: const Size.fromHeight(40),
+                      ),
+                      child: ref.watch(userNotifierProvider).isLoading2
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const Text(
+                              'Reject',
+                              style: TextStyle(color: Colors.white),
+                            )),
+                )
+              ],
+            ),
+          ),
         ],
       )),
     );
