@@ -46,54 +46,57 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
     return Scaffold(
       backgroundColor: const Color(0xFFede7f1),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 100),
-        child: SingleChildScrollView(
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Sign In',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Fictional Spork Admin',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const Divider(),
+            const Text(
+              'Sign In',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            CustomTextField(
+              controller: emailController,
+              labelText: "email",
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            CustomTextField(
+              controller: passwordController,
+              obscureText: true,
+              labelText: 'Password',
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(authNotifierProvider.notifier).reset();
+                authNotifier.login(
+                    emailController.text, passwordController.text);
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.purple[700],
+                minimumSize: const Size.fromHeight(50),
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              CustomTextField(
-                controller: emailController,
-                labelText: "email",
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              CustomTextField(
-                controller: passwordController,
-                obscureText: true,
-                // contentPadding: EdgeInsets.all(10),
-                labelText: 'Password',
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    ref.read(authNotifierProvider.notifier).reset();
-                    authNotifier.login(
-                        emailController.text, passwordController.text);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.purple[700],
-                    minimumSize: const Size.fromHeight(50),
-                  ),
-                  child: ref.watch(authNotifierProvider).isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                          color: Colors.white,
-                        ))
-                      : const Text("Log In")),
-            ],
-          ),
+              child: ref.watch(authNotifierProvider).isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Text("Log In"),
+            ),
+          ],
         ),
       ),
     );

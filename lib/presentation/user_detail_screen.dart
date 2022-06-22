@@ -28,74 +28,86 @@ class UserDetailScreen extends ConsumerWidget {
         .singleWhere((element) => element.id == userId);
     return Scaffold(
       body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
           child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              DetailRow(title: "First Name", value: user.firstName),
-              DetailRow(title: "Last Name", value: user.lastName),
-              DetailRow(title: "Email", value: user.email),
-              DetailRow(title: "Phone Number", value: user.phoneNumber),
-              DetailRow(
-                  title: "Profile Verification Status",
-                  value: user.profileVerificationStatus),
-              DetailRow(
-                  title: "Phone Verification Status",
-                  value: user.phoneVerificationStatus),
+              Column(
+                children: [
+                  DetailRow(title: "First Name", value: user.firstName),
+                  DetailRow(title: "Last Name", value: user.lastName),
+                  DetailRow(title: "Email", value: user.email),
+                  DetailRow(title: "Phone Number", value: user.phoneNumber),
+                  DetailRow(
+                      title: "Profile Verification Status",
+                      value: user.profileVerificationStatus),
+                  DetailRow(
+                      title: "Phone Verification Status",
+                      value: user.phoneVerificationStatus),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => userNotifier.changeVerificationStatus(
+                            userId, "VERIFIED"),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.green,
+                          // minimumSize: const Size.fromHeight(50),
+                        ),
+                        child: ref.watch(userNotifierProvider).isLoading2
+                            ? const Center(
+                                child: SizedBox(
+                                  height: 15,
+                                  width: 15,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              )
+                            : const Text(
+                                'Approve',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: ElevatedButton(
+                          onPressed: () => userNotifier
+                              .changeVerificationStatus(userId, "REJECTED"),
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.red,
+                            // minimumSize: const Size.fromHeight(40),
+                          ),
+                          child: ref.watch(userNotifierProvider).isLoading2
+                              ? const Center(
+                                  child: SizedBox(
+                                    height: 15,
+                                    width: 15,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                )
+                              : const Text(
+                                  'Reject',
+                                  style: TextStyle(color: Colors.white),
+                                )),
+                    )
+                  ],
+                ),
+              ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => userNotifier.changeVerificationStatus(
-                        userId, "VERIFIED"),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
-                      // minimumSize: const Size.fromHeight(50),
-                    ),
-                    child: ref.watch(userNotifierProvider).isLoading2
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : const Text(
-                            'Approve',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: ElevatedButton(
-                      onPressed: () => userNotifier.changeVerificationStatus(
-                          userId, "REJECTED"),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
-                        // minimumSize: const Size.fromHeight(40),
-                      ),
-                      child: ref.watch(userNotifierProvider).isLoading2
-                          ? const Center(
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : const Text(
-                              'Reject',
-                              style: TextStyle(color: Colors.white),
-                            )),
-                )
-              ],
-            ),
-          ),
-        ],
-      )),
+        ),
+      ),
     );
   }
 }
@@ -112,6 +124,7 @@ class DetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(title),
         const SizedBox(

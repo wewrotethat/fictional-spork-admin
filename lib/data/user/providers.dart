@@ -7,7 +7,7 @@ import 'package:fictional_spork/data/user/user_repo.dart';
 final dioProvider2 = Provider((ref) {
   return Dio()
     ..options =
-        BaseOptions(baseUrl: 'https://fictional-spork-server.herokuapp.com/api')
+        BaseOptions(baseUrl: 'https://237d-197-156-86-60.eu.ngrok.io/api')
     ..interceptors.add(ref.watch(dioInterceptorProvider));
 });
 

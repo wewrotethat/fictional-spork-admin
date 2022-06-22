@@ -38,21 +38,26 @@ class _UsersListScreenState extends ConsumerState<UsersListScreen> {
     }
     return Scaffold(
       body: SafeArea(
-        child: ListView.builder(
-            itemCount: usersListState.data.length,
-            itemBuilder: ((context, index) {
-              final user = usersListState.data[index];
-              return ListTile(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => UserDetailScreen(userId: user.id),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            ref.read(userNotifierProvider.notifier).getUsers();
+          },
+          child: ListView.builder(
+              itemCount: usersListState.data.length,
+              itemBuilder: ((context, index) {
+                final user = usersListState.data[index];
+                return ListTile(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => UserDetailScreen(userId: user.id),
+                    ),
                   ),
-                ),
-                title: Text("${user.firstName} ${user.lastName}"),
-                subtitle: Text(user.email),
-                trailing: Text(user.profileVerificationStatus),
-              );
-            })),
+                  title: Text("${user.firstName} ${user.lastName}"),
+                  subtitle: Text(user.email),
+                  trailing: Text(user.profileVerificationStatus),
+                );
+              })),
+        ),
       ),
     );
   }
